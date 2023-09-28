@@ -10,11 +10,25 @@ let boing;
 let collect;
 let loss;
 let inPlay = false;
+let count = 0;
+let treasure1X;
+let treasure1Y;
+let treasure1speed;
+let treasure2X;
+let treasure2Y;
+let treasure2speed;
 
 function setup() {
-    createCanvas(500, 500);
+    let c = createCanvas(500, 500);
+    c.parent('#canvas-container');
     background(0);
 
+    treasure1X = -50;
+    treasure1Y = random(100, 400);
+    treasure1speed = random(3, 10);
+    treasure2X = 500;
+    treasure2Y = random(100, 400);
+    treasure2speed = random(3, 10);
 }
 
 function preload() {
@@ -29,7 +43,7 @@ function preload() {
 }
 
 function draw() {
-    // make these move
+    // TODO: make these move
     image(bckgrnd, 0, 0);
     image(foreground, 0, 0);
 
@@ -66,17 +80,19 @@ function draw() {
 
     if(ballX > 470) {
         ballX = 470;
-        speedX = -1*speedX;
+        speedX = -1.05*speedX;
+        speedY = 1.05*speedY;
     }
     if(ballX < 30) {
         ballX = 30;
-        speedX = -1*speedX;
+        speedX = -1.05*speedX;
+        speedY = 1.05*speedY;
     }
     if(ballY > 470) {
         if(ballX > rectX && ballX < rectX + 100) {
             ballY = 470;
-            speedY = -1*speedY;
-            bounceXSpeed();
+            speedY = -1.05*speedY;
+            bouncePaddle();
             boing.play();
         }
         else {
@@ -85,8 +101,47 @@ function draw() {
     }
     if(ballY < 30) {
         ballY = 30;
-        speedY = -1*speedY;
+        speedY = -1.05*speedY;
+        speedX = 1.05*speedX;
     }
+
+    // treasures
+    if ( treasure1X > 500 ) {
+        treasure1X = -50;
+        treasure1Y = random(100, 400);
+        treasure1speed = random(3, 10);
+    }
+    if ( treasure2X < -50 ) {
+        treasure2X = 500;
+        treasure2Y = random(100, 400);
+        treasure2speed = random(3, 10);
+    }
+
+    image(treasure, treasure1X, treasure1Y);
+    image(treasure, treasure2X, treasure2Y);
+
+    treasure1X += treasure1speed;
+    treasure2X -= treasure2speed;
+
+    line(ballX, ballY, treasure1X, treasure1Y);
+    if ( dist(ballX, ballY, treasure1X, treasure1Y) < 40 ) {
+        treasure1X = -50;
+        treasure1Y = random(100, 400);
+        treasure1speed = random(3, 10);
+        count += 1;
+        collect.play();
+    }
+    if ( dist(ballX, ballY, treasure2X, treasure2Y) < 40 ) {
+        treasure2X = 500;
+        treasure2Y = random(100, 400);
+        treasure2speed = random(3, 10);
+        count += 1;
+        collect.play();
+    }
+
+    fill('white');
+    textSize(30);
+    text("Score: " + count, 10, 30);
 }
 
 function restartGame() {
@@ -96,9 +151,10 @@ function restartGame() {
     speedY = 0;
     loss.play();
     inPlay = false;
+    count = 0;
 }
 
-function bounceXSpeed() {
+function bouncePaddle() { // TODO: this
     if(speedX > 0) {
         speedX += 1;
     }
