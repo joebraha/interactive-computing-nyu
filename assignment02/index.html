@@ -16,13 +16,37 @@
         margin: auto;
         width: 500px;
         height: 500px;
+        border: 5px solid gray;
+      }
+      h3, h2 {
+        border: 2px solid black;
+        background-color: white;
+      }
+      div.flex-box {
+        border: 2px deeppink dashed;
+        max-width: 400px;
+        display: flex;
+        justify-content: space-around;
+        margin: auto;
+        /* border: 2px deeppink dashed; */
       }
     </style>
 
   </head>
-  <body>
-    <a href="index.html">Reload</a>
+  <body style="background-image: url('images/background.png');">
+    <a href="index.html" style="color: pink;">Reload</a>
+    <h1 style="text-align: center; color: green;">BREAKOUT!</h1>
     <div id="canvas-container"></div>
+    <div style="max-width: 500px; margin: auto;">
+      <h2 style="text-align: center;">Controls:</h2>
+    </div>
+    <div class="flex-box">
+      <h3 style="text-align: center;">Press A to move left</h3>
+      <h3 style="text-align: center;">Press D to move right</h3>
+    </div>
+    <div class="flex-box">
+      <h3 style="text-align: center;">Collect as many treasures as you can!</h3>
+    </div>
   </body>
 </html>
 

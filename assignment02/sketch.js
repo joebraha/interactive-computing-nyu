@@ -17,6 +17,13 @@ let treasure1speed;
 let treasure2X;
 let treasure2Y;
 let treasure2speed;
+let treasure1maxSpeed;
+let treasure2maxSpeed;
+let background1Y = 0;
+let background2Y = -1000;
+let foreground1Y = 0;
+let foreground2Y = -1000;
+let hue = 0;
 
 function setup() {
     let c = createCanvas(500, 500);
@@ -26,9 +33,11 @@ function setup() {
     treasure1X = -50;
     treasure1Y = random(100, 400);
     treasure1speed = random(3, 10);
+    treasure1maxSpeed = random(-2, 2);
     treasure2X = 500;
     treasure2Y = random(100, 400);
     treasure2speed = random(3, 10);
+    treasure2maxSpeed = random(-2, 2);
 }
 
 function preload() {
@@ -43,10 +52,33 @@ function preload() {
 }
 
 function draw() {
-    // TODO: make these move
-    image(bckgrnd, 0, 0);
-    image(foreground, 0, 0);
+    image(bckgrnd, 0, background1Y);
+    image(bckgrnd, 0, background2Y);
+    image(foreground, 0, foreground1Y);
+    image(foreground, 0, foreground2Y);
 
+    background1Y += .25;
+    background2Y += .25;
+    foreground1Y += .5;
+    foreground2Y += .5;
+
+    if(background1Y > 1000) {
+        background1Y = -1000;
+    }
+    if(background2Y > 1000) {
+        background2Y = -1000;
+    }
+    if(foreground1Y > 1000) {
+        foreground1Y = -1000;
+    }
+    if(foreground2Y > 1000) {
+        foreground2Y = -1000;
+    }
+
+
+
+
+    colorMode(RGB);
 
     // walls
     fill(128);
@@ -56,7 +88,7 @@ function draw() {
     rect(490, 0, 10, 500);
 
     // paddle
-    fill(100, 0, 0);
+    fill(255, 0, 0);
     rect(rectX, 490, 100, 100); 
     if(keyIsDown(65)) {
         rectX -= 10;
@@ -72,7 +104,12 @@ function draw() {
     }
 
     // ball
-    fill('yellow');
+    colorMode(HSB);
+    fill(hue, 100, 100);
+    hue += .25;
+    if(hue > 360) {
+        hue = 0;
+    }
     ellipse(ballX, ballY, 40, 40);
 
     ballX += speedX;
@@ -89,7 +126,7 @@ function draw() {
         speedY = 1.05*speedY;
     }
     if(ballY > 470) {
-        if(ballX > rectX && ballX < rectX + 100) {
+        if(ballX > rectX-10 && ballX < rectX + 110) { // buffer given to rect hitbox
             ballY = 470;
             speedY = -1.05*speedY;
             bouncePaddle();
@@ -110,11 +147,13 @@ function draw() {
         treasure1X = -50;
         treasure1Y = random(100, 400);
         treasure1speed = random(3, 10);
+        treasure1maxSpeed = random(-2, 2);
     }
     if ( treasure2X < -50 ) {
         treasure2X = 500;
         treasure2Y = random(100, 400);
         treasure2speed = random(3, 10);
+        treasure2maxSpeed = random(-2, 2);
     }
 
     image(treasure, treasure1X, treasure1Y);
@@ -123,25 +162,39 @@ function draw() {
     treasure1X += treasure1speed;
     treasure2X -= treasure2speed;
 
-    line(ballX, ballY, treasure1X, treasure1Y);
+    treasure1Y += map(treasure1X, 0, 500, 0, treasure1maxSpeed);
+    treasure2Y += map(treasure2X, 0, 500, 0, treasure2maxSpeed);
+
     if ( dist(ballX, ballY, treasure1X, treasure1Y) < 40 ) {
         treasure1X = -50;
         treasure1Y = random(100, 400);
         treasure1speed = random(3, 10);
-        count += 1;
-        collect.play();
+        treasure1maxSpeed = random(-2, 2);
+        if(inPlay) {
+            count += 1;
+            collect.play();
+        }
     }
     if ( dist(ballX, ballY, treasure2X, treasure2Y) < 40 ) {
         treasure2X = 500;
         treasure2Y = random(100, 400);
         treasure2speed = random(3, 10);
-        count += 1;
-        collect.play();
+        treasure2maxSpeed = random(-2, 2);
+        if(inPlay) {
+            count += 1;
+            collect.play();
+        }
     }
 
     fill('white');
     textSize(30);
-    text("Score: " + count, 10, 30);
+    text("Score: " + count, 10, 33);
+
+    if(!inPlay) {
+        fill('white');
+        textSize(30);
+        text("Click the mouse to Start!", 90, 250);
+    }
 }
 
 function restartGame() {
@@ -155,11 +208,12 @@ function restartGame() {
 }
 
 function bouncePaddle() { // TODO: this
-    if(speedX > 0) {
-        speedX += 1;
+    let distance = abs(ballX - (rectX + 50));
+    if (speedX > 0) {
+        speedX += map(distance, 0, 50, 1, 5);
     }
     else {
-        speedX -= 1;
+        speedX -= map(distance, 0, 50, 1, 5);
     }
 }
 
