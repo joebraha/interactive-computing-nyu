@@ -19,6 +19,8 @@ let treasure2Y;
 let treasure2speed;
 let treasure1maxSpeed;
 let treasure2maxSpeed;
+let treasure1angle = 0;
+let treasure2angle = 0;
 let background1Y = 0;
 let background2Y = -1000;
 let foreground1Y = 0;
@@ -156,14 +158,26 @@ function draw() {
         treasure2maxSpeed = random(-2, 2);
     }
 
-    image(treasure, treasure1X, treasure1Y);
-    image(treasure, treasure2X, treasure2Y);
+    push();
+    translate(treasure1X, treasure1Y);
+    rotate(treasure1angle);
+    treasure1angle += 0.01;
+    image(treasure, 0, 0);
+    pop();
+
+    push();
+    translate(treasure2X, treasure2Y);
+    rotate(treasure2angle);
+    treasure2angle += 0.01;
+    image(treasure, 0, 0);
+    pop();
+
 
     treasure1X += treasure1speed;
     treasure2X -= treasure2speed;
 
     treasure1Y += map(treasure1X, 0, 500, 0, treasure1maxSpeed);
-    treasure2Y += map(treasure2X, 0, 500, 0, treasure2maxSpeed);
+    treasure2Y += map(treasure2X, 500, 0, 0, treasure2maxSpeed);
 
     if ( dist(ballX, ballY, treasure1X, treasure1Y) < 40 ) {
         treasure1X = -50;
@@ -207,7 +221,9 @@ function restartGame() {
     count = 0;
 }
 
-function bouncePaddle() { // TODO: this
+function bouncePaddle() {
+    // chose to have it add to the speed instead of 'rsset' the speed
+    // because I thought it fit the game flow better.
     let distance = abs(ballX - (rectX + 50));
     if (speedX > 0) {
         speedX += map(distance, 0, 50, 1, 5);
