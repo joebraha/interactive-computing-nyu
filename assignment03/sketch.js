@@ -25,15 +25,15 @@ let selector;
 
 
 function preload() {
-    // waterImage = loadImage('images/waterImage.jpeg');
-    // waterImage_flipped = loadImage('images/waterImage_flipped.jpeg');
-    waterImage = loadImage('images/water_background_better.jpg');
-    waterImage_flipped = loadImage('images/water_background_better_flipped.png');
-    // treasureImage = loadImage('images/treasureIma.jpg');
-    boatImage = loadImage('images/boatImage.png');
-    boatImageLeft = loadImage('images/boatImageLeft.png');
-    boatImageRight = loadImage('images/boatImageRight.png');
-    boulderImage = loadImage('images/boulderImage.png');
+    // waterImage = loadImage('assets/waterImage.jpeg');
+    // waterImage_flipped = loadImage('assets/waterImage_flipped.jpeg');
+    waterImage = loadImage('assets/water_background_better.jpg');
+    waterImage_flipped = loadImage('assets/water_background_better_flipped.png');
+    // treasureImage = loadImage('assets/treasureIma.jpg');
+    boatImage = loadImage('assets/boatImage.png');
+    boatImageLeft = loadImage('assets/boatImageLeft.png');
+    boatImageRight = loadImage('assets/boatImageRight.png');
+    boulderImage = loadImage('assets/boulderImage.png');
 }
 
 function setup() {

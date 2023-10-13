@@ -1,0 +1,16 @@
+https://pixabay.com/sound-effects/search/treasure/
+- treasure_sound: "short success sound glockenspiel treasure..."
+
+https://www.pexels.com/photo/blue-water-2860705/
+- water_background_better
+
+https://www.pngall.com/boulder-png/download/139135
+- boulderImage
+
+https://wallpaperswide.com/dinghy_sailing-wallpapers.html
+- background_water
+
+https://helianthus-games.itch.io/pixel-art-viking-ship-16-directions
+via
+https://itch.io/game-assets/newest/free/tag-8-bit
+- boatImage*
