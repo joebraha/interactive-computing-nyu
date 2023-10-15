@@ -1,14 +1,20 @@
 let waterImage;
-let treasureImage;
 let boatImage;
 let boulderImage;
+let treasureImage;
+let treasureSound;
 let boat;
 let boulders;
+let treasures;
 let backgrnd;
 let waterSpeed = 1;
 
 // TODO: implement saving
-let highscore;
+let highscores = {
+    easy: 0,
+    medium: 0,
+    hard: 0
+}
 
 /* states:
 0 - start menu
@@ -25,29 +31,32 @@ let selector;
 
 
 function preload() {
-    // waterImage = loadImage('assets/waterImage.jpeg');
-    // waterImage_flipped = loadImage('assets/waterImage_flipped.jpeg');
-    waterImage = loadImage('assets/water_background_better.jpg');
-    waterImage_flipped = loadImage('assets/water_background_better_flipped.png');
-    // treasureImage = loadImage('assets/treasureIma.jpg');
-    boatImage = loadImage('assets/boatImage.png');
-    boatImageLeft = loadImage('assets/boatImageLeft.png');
-    boatImageRight = loadImage('assets/boatImageRight.png');
-    boulderImage = loadImage('assets/boulderImage.png');
+    waterImage = loadImage('./assets/water_background_better.jpg');
+    waterImage_flipped = loadImage('./assets/water_background_better_flipped.png');
+    boatImage = loadImage('./assets/boatImage.png');
+    boatImageLeft = loadImage('./assets/boatImageLeft.png');
+    boatImageRight = loadImage('./assets/boatImageRight.png');
+    boulderImage = loadImage('./assets/boulderImage.png');
+    treasureImage = loadImage('./assets/treasureImage.png');    
+    treasureSound = loadSound('./assets/treasureSound.mp3');
 }
 
 function setup() {
     c = createCanvas(500, 500);
     c.parent('#canvas-container');
     background(0);
-    selector = document.getElementById("difficulty");
-    
     imageMode(CENTER);
+    selector = document.getElementById("difficulty");
 
+    // using += to avoid null value on initial load
+    highscores.easy += Number(window.localStorage.getItem('highscore_easy'));
+    highscores.medium += Number(window.localStorage.getItem('highscore_medium'));
+    highscores.hard += Number(window.localStorage.getItem('highscore_hard'));
+    
     boat = new Boat(245);
     boulders = new Boulders(boat);
+    treasures = new Treasures(boat);
     backgrnd = new Background();
-
 }
 
 function draw() {
@@ -69,7 +78,17 @@ function startMenu() {
     fill('white');
     textSize(30);
     text("Welcome! Select game mode below", 10, 100);
-    text("to continue.", 200, 130)
+    text("to continue.", 200, 130);
+
+    text("High Scores:", 10, 190);
+    text("Easy", 10, 230);
+    text(highscores.easy, 200, 230);
+    text("Medium", 10, 260);
+    text(highscores.medium, 200, 260);
+    text("Hard", 10, 290);
+    text(highscores.hard, 200, 290);
+
+    
 }
 
 function gameOver() {
@@ -80,8 +99,29 @@ function game() {
     backgrnd.act();
     boat.act();
     boulders.act();
+    treasures.act();
 }
 
+function updateHighscores(score, speed) {
+    switch ( speed ) {
+        case 1:
+            if ( score > highscores.easy ) {
+                highscores.easy = score;
+            }
+        case 3:
+            if ( score > highscores.medium ) {
+                highscores.medium = score;
+            }
+        case 5:
+            if ( score > highscores.hard ) {
+                highscores.hard = score;
+            }
+    }
+    console.log(highscores);
+    window.localStorage.setItem('highscore_easy', highscores.easy);
+    window.localStorage.setItem('highscore_medium', highscores.medium);
+    window.localStorage.setItem('highscore_hard', highscores.hard);
+}
 
 function buttonClicked(button) {
     state++;
@@ -101,12 +141,11 @@ function buttonClicked(button) {
     }
     if ( state == 2 ) {
         boulders = new Boulders(boat);
+        updateHighscores(boat.score, waterSpeed);
+        this.score = 0;
     }
 }
 
-// function changeSelection(event) {
-//     waterSpeed = Number(event.value);
-// }
 
 // draws a tiled infinitely scrolling background of water
 function drawBackground() {
@@ -118,7 +157,7 @@ class Boat {
         this.x = x;
         this.y = 390;
         this.image = boatImage;
-        this.health = 3;
+        this.score = 0;
     }
 
     act() {
@@ -142,7 +181,13 @@ class Boat {
     getHit() {
         state++;
         boulders = new Boulders(this);
-        // boulders.add();
+        updateHighscores(this.score, waterSpeed);
+        this.score = 0;
+        // TODO: change button to display "new game"
+    }
+
+    collectTreasure() {
+        this.score += 1;
     }
 }
 
@@ -160,7 +205,7 @@ class Boulders {
     }
 
     add() {
-        this.array.push(new Boulder(random(50, 450)));
+        this.array.push(new Boulder(random(-50, -450)));
     }
 }
 
@@ -188,6 +233,73 @@ class Boulder {
         }
     }
 }
+
+class Treasures {
+    constructor(user) {
+        this.array = [new Treasure(-20), new Treasure(-200)];
+        this.user = user;
+    }
+
+    act() {
+        this.array.forEach(t => {
+            t.act();
+            t.detect(this.user);
+        });
+    }
+
+    add() {
+        this.array.push(new Treasure(random(50, 450)));
+    }
+
+}
+
+class Treasure {
+    constructor(y) {
+        this.y = y;
+        this.spawn();
+        this.image = treasureImage;
+        this.frame = 0;
+        this.collectSound = treasureSound;
+        this.hitbox = 30;
+        // this.boulders = boulders;
+    }
+
+    act() {
+        this.y += waterSpeed;
+        image(this.image, this.x, this.y, 48, 32, this.frame*48, 0, 48, 32);
+        this.frame += 1;
+        this.frame = this.frame % 5;
+        if ( this.y > 550 ) {
+            this.y -= 650;
+            this.spawn();
+        }
+    }
+
+    detect(user) {
+        if ( dist(this.x, this.y, user.x, user.y ) <= this.hitbox ) {
+            user.collectTreasure();
+            this.collectSound.play();
+            this.y -= 650;
+            this.spawn();
+        }
+    }
+
+    spawn() {
+        this.x = random(500);
+        // depricate attempt because it's kind of hard because it depends which was generated first 
+        // (or I can just do this check from here and when generating each boulder, but nah).
+        // boulders.array.forEach(b => {
+        //     if ( dist(this.x, this.y, b.x, b.y) <= b.hitbox ) {
+        //         console.log("recurse");
+        //         this.spawn();
+        //         console.log("done");
+        //     }
+        // });
+    }  
+
+
+}
+
 
 class Background {
     constructor() {
