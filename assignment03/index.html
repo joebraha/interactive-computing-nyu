@@ -23,7 +23,7 @@
         background-color: white;
       }
       div.flex-box {
-        border: 2px deeppink dashed;
+        /* border: 2px deeppink dashed; */
         max-width: 400px;
         display: flex;
         justify-content: space-around;
@@ -34,7 +34,7 @@
   </head>
   <body style="background-image: url('assets/background_water.jpg');">
     <a href="index.html" style="color: pink;">Reload</a>
-    <h1 style="text-align: center; color: baclk;">Wreckage Recovery</h1>
+    <h1 style="text-align: center; color: baclk;">Treasure Recovery</h1>
     <div id="canvas-container"></div>
     <div class="flex-box">
       <select id="difficulty">
@@ -42,7 +42,7 @@
         <option value="3">Medium</option>
         <option value="5">Hard</option>
       </select>
-      <button onclick="buttonClicked(this);">Start!</button>
+      <button id="startButton" onclick="buttonClicked(this);">Start!</button>
     </div>
     <div style="max-width: 500px; margin: auto;">
       <h2 style="text-align: center;">Controls:</h2>

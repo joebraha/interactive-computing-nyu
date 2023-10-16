@@ -14,3 +14,12 @@ https://helianthus-games.itch.io/pixel-art-viking-ship-16-directions
 via
 https://itch.io/game-assets/newest/free/tag-8-bit
 - boatImage*
+
+https://admurin.itch.io/free-chest-animations/download/eyJpZCI6MTMxMDczNCwiZXhwaXJlcyI6MTY5NzMzMjI1N30%3d.fLoLCS%2bTUb57oEGJK19kg%2fM3tR8%3d
+- treasureImage
+
+
+TODO
+- inspiration
+- documentation
+- i6

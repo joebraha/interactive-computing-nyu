@@ -9,7 +9,6 @@ let treasures;
 let backgrnd;
 let waterSpeed = 1;
 
-// TODO: implement saving
 let highscores = {
     easy: 0,
     medium: 0,
@@ -44,8 +43,13 @@ function preload() {
 function setup() {
     c = createCanvas(500, 500);
     c.parent('#canvas-container');
+    
     background(0);
     imageMode(CENTER);
+    fill('white');
+    textSize(30);
+
+    // holds the selector DOM object to get difficulty info
     selector = document.getElementById("difficulty");
 
     // using += to avoid null value on initial load
@@ -75,8 +79,6 @@ function draw() {
 }
 
 function startMenu() {
-    fill('white');
-    textSize(30);
     text("Welcome! Select game mode below", 10, 100);
     text("to continue.", 200, 130);
 
@@ -87,8 +89,6 @@ function startMenu() {
     text(highscores.medium, 200, 260);
     text("Hard", 10, 290);
     text(highscores.hard, 200, 290);
-
-    
 }
 
 function gameOver() {
@@ -103,21 +103,25 @@ function game() {
 }
 
 function updateHighscores(score, speed) {
+    // saves the score to whichever difficulty mode is used
     switch ( speed ) {
         case 1:
             if ( score > highscores.easy ) {
                 highscores.easy = score;
             }
+            break;
         case 3:
             if ( score > highscores.medium ) {
                 highscores.medium = score;
             }
+            break;
         case 5:
             if ( score > highscores.hard ) {
                 highscores.hard = score;
             }
     }
-    console.log(highscores);
+
+    // write to local storage after every game
     window.localStorage.setItem('highscore_easy', highscores.easy);
     window.localStorage.setItem('highscore_medium', highscores.medium);
     window.localStorage.setItem('highscore_hard', highscores.hard);
@@ -128,9 +132,11 @@ function buttonClicked(button) {
     if ( state == 3 ) {
         state = 0;
     }
+
     button.innerHTML = buttonStates[state];
 
     if (state == 1) {
+        // new game, set difficulty and add more boulders
         waterSpeed = Number(selector.value);
         if ( waterSpeed > 1 ) {
             boulders.add();
@@ -140,18 +146,14 @@ function buttonClicked(button) {
         }
     }
     if ( state == 2 ) {
+        // end game, refresh boulders and update highscores
         boulders = new Boulders(boat);
         updateHighscores(boat.score, waterSpeed);
         this.score = 0;
     }
 }
 
-
-// draws a tiled infinitely scrolling background of water
-function drawBackground() {
-    image(waterImage, 250, 250);
-}
-
+// boat class to handle user controlled character
 class Boat {
     constructor(x) {
         this.x = x;
@@ -173,17 +175,19 @@ class Boat {
             this.image = boatImage;
         }
 
+        // don't go off the map
         this.x = constrain(this.x, 5, 495);
 
         image(this.image, this.x, this.y);
     }
 
     getHit() {
+        // boulder will call this func to trigger game end
         state++;
         boulders = new Boulders(this);
         updateHighscores(this.score, waterSpeed);
         this.score = 0;
-        // TODO: change button to display "new game"
+        document.getElementById("startButton").textContent = "New Game";
     }
 
     collectTreasure() {
@@ -191,6 +195,7 @@ class Boat {
     }
 }
 
+// container class to hold array of Boulders
 class Boulders {
     constructor(user) {
         this.array = [new Boulder(-20), new Boulder(-200), new Boulder(-380)];
@@ -234,6 +239,7 @@ class Boulder {
     }
 }
 
+// container class to hold treasures that user will try to get
 class Treasures {
     constructor(user) {
         this.array = [new Treasure(-20), new Treasure(-200)];
@@ -256,22 +262,29 @@ class Treasures {
 class Treasure {
     constructor(y) {
         this.y = y;
-        this.spawn();
+        this.x = random(500);
         this.image = treasureImage;
         this.frame = 0;
         this.collectSound = treasureSound;
         this.hitbox = 30;
-        // this.boulders = boulders;
+        this.frameDuration = 0;
     }
 
     act() {
         this.y += waterSpeed;
+
+        // animation of sprite
         image(this.image, this.x, this.y, 48, 32, this.frame*48, 0, 48, 32);
-        this.frame += 1;
-        this.frame = this.frame % 5;
+        this.frameDuration += 1;
+        if ( this.frameDuration >= 10 ) {
+            this.frame += 1;
+            this.frame = this.frame % 5;
+            this.frameDuration = 0;
+        }
+
         if ( this.y > 550 ) {
             this.y -= 650;
-            this.spawn();
+            this.x = random(500);
         }
     }
 
@@ -280,27 +293,12 @@ class Treasure {
             user.collectTreasure();
             this.collectSound.play();
             this.y -= 650;
-            this.spawn();
+            this.x = random(500);
         }
     }
-
-    spawn() {
-        this.x = random(500);
-        // depricate attempt because it's kind of hard because it depends which was generated first 
-        // (or I can just do this check from here and when generating each boulder, but nah).
-        // boulders.array.forEach(b => {
-        //     if ( dist(this.x, this.y, b.x, b.y) <= b.hitbox ) {
-        //         console.log("recurse");
-        //         this.spawn();
-        //         console.log("done");
-        //     }
-        // });
-    }  
-
-
 }
 
-
+// class to control the dynamic infinite background
 class Background {
     constructor() {
         this.image1 = waterImage;
@@ -313,6 +311,7 @@ class Background {
     act() {
         this.y1 += waterSpeed;
         this.y2 += waterSpeed;
+        
         image(this.image1, this.x, this.y1);
         image(this.image2, this.x, this.y2);
 
