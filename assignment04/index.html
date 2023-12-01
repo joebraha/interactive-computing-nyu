@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <!-- load in the p5 core library -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+
+    <!-- load in the p5 sound library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.js"></script>
+
+    <!-- your custom sketch code -->
+    <script src="sketch.js"></script>
+
+    <!-- custom CSS styles for this page -->
+    <style>
+      #canvas-container {
+        margin: auto;
+        width: 800px;
+        height: 600px;
+        border: 5px solid gray;
+      }
+      div.flex-box {
+        max-width: 400px;
+        display: flex;
+        justify-content: space-around;
+        margin: auto;
+      }
+    </style>
+
+  </head>
+  <body style="background-color: yellow;">
+    <a href="index.html" style="color: black;">Reload</a>
+    <h1 style="text-align: center; color: gray;">Robot Factory</h1>
+    <div id="canvas-container"></div>
+    <div class="flex-box">
+      <h3 style="text-align: center;">Robots will enter the screen from the left.
+      Click on the arrows to change their direction and guide the robots around the screen.</h3>
+    </div>
+
+  </body>
+</html>
+

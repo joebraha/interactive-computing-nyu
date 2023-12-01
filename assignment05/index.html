@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-us">
+	<head>
+		<meta charset="UTF-8">
+
+        <!-- load in the p5 core library -->
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+		<!-- A-Frame core library -->
+		<script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+		<!-- AFrameP5 library -->
+		<script src="https://craignyu.github.io/aframep5/libraries/aframep5-v2.2.js"></script>
+
+		<script src="sketch.js"></script>
+
+	</head>
+	<body>
+
+		<!-- container to hold our VR scene -->
+		<a-scene id="VRScene">
+
+		  <!-- container to hold our assets -->
+		  <a-assets>
+		    <img id="stonebrick" src="assets/stonebrick.png">
+		    <img id="sky" src="assets/sky.jpeg">
+            <a-asset-item id="disc_obj" src="assets/AXS.obj"></a-asset-item>
+            <a-asset-item id="disc_mtl" src="assets/AXS.mtl"></a-asset-item>
+
+		  </a-assets>
+
+		</a-scene>
+
+	</body>
+</html>

@@ -1,3 +1,15 @@
+Sailing and boating in general is pretty cool. The free feeling of being out at sea,
+and the exhileration of moving swiftly through the water is something I am trying to 
+capture. Additionally, infinite runners are uniquely fun in their comforting simplicity.
+There's no complicating factors in the game - everything is as it was and as you expect 
+it to be, forever. Kind of like the expanse of the ocean.
+
+
+
+
+
+Resources and asets:
+
 https://pixabay.com/sound-effects/search/treasure/
 - treasure_sound: "short success sound glockenspiel treasure..."
 
