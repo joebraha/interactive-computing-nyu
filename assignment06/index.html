@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- load in the p5 core library -->
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.7.0/lib/p5.js"></script>
+
+        <!-- load in the p5 sound library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.js"></script>
+
+        <!-- ml5 library -->
+        <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+
+        <!-- your custom sketch code -->
+        <script src="sketch.js"></script>
+
+
+        <!-- custom CSS styles for this page -->
+        <style>
+            #canvas-container {
+            margin: auto;
+            width: 640px;
+            height: 480px;
+            border: 5px solid black;
+            }
+            div.flex-box {
+            max-width: 400px;
+            display: flex;
+            justify-content: space-around;
+            margin: auto;
+            }
+        </style>
+  </head>
+  <body style="background-color: red;">
+    <a href="index.html">Reload</a>
+    <h1 style="text-align: center; color: black;">Shoot the Targets!</h1>
+    <div id="canvas-container"></div>
+    <div class="flex-box">
+        <h3 style="text-align: center;">Shoot the targets to prove your skills. Align your hands to aim, and shout to shoot from your left hand.</h3>
+      </div>
+  </body>
+</html>
+
